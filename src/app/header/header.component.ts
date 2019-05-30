@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import {Component, EventEmitter, Output} from '@angular/core';
 
 @Component({
   selector: 'app-header',
@@ -6,4 +6,9 @@ import { Component } from '@angular/core';
 })
 export class HeaderComponent {
 
+  @Output() setCurrentPage = new EventEmitter<string>();
+
+  onSetCurrentPage(page: string) {
+    this.setCurrentPage.emit(page);
+  }
 }
