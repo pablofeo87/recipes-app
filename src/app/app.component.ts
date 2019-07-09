@@ -8,10 +8,6 @@ import {Component, Input} from '@angular/core';
 export class AppComponent {
   title = 'recipes-app';
   current = 'recipes';
-
-  onCurrentPageSetted(page) {
-    this.current = page;
-  }
 }
 
 
