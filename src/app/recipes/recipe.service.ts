@@ -11,27 +11,34 @@ export class RecipeService {
 
   recipesChanged = new Subject<Recipe[]>();
 
-  private recipes: Recipe[] =
-    [new Recipe(      
-      'A Test Recipe',
-      'This is simply a test',
-      'https://www.maxpixel.net/static/photo/1x/Home-Made-Dishes-Recipe-Kitchen-Food-Bio-Meals-1175495.jpg',
-      [
-        new Ingredient('Meat', 1),
-        new Ingredient('French fries', 20)
-      ]),
-      new Recipe(
-        'A Test Recipe 2',
-        'This is simply a test 2',
-        'https://www.maxpixel.net/static/photo/1x/Home-Made-Dishes-Recipe-Kitchen-Food-Bio-Meals-1175495.jpg',
-        [
-          new Ingredient('Meat', 30),
-          new Ingredient('French fries', 10)
-        ]),
-    ];
+  // private recipes: Recipe[] =
+  //   [new Recipe(      
+  //     'A Test Recipe',
+  //     'This is simply a test',
+  //     'https://www.maxpixel.net/static/photo/1x/Home-Made-Dishes-Recipe-Kitchen-Food-Bio-Meals-1175495.jpg',
+  //     [
+  //       new Ingredient('Meat', 1),
+  //       new Ingredient('French fries', 20)
+  //     ]),
+  //     new Recipe(
+  //       'A Test Recipe 2',
+  //       'This is simply a test 2',
+  //       'https://www.maxpixel.net/static/photo/1x/Home-Made-Dishes-Recipe-Kitchen-Food-Bio-Meals-1175495.jpg',
+  //       [
+  //         new Ingredient('Meat', 30),
+  //         new Ingredient('French fries', 10)
+  //       ]),
+  //   ];
+
+  private recipes: Recipe[] = [];
 
   getRecipes() {
     return this.recipes.slice();
+  }
+
+  setRecipes(recipes: Recipe[]) {
+    this.recipes = recipes;
+    this.recipesChanged.next(this.recipes.slice());
   }
 
   getRecipe(index: number) {
@@ -53,7 +60,7 @@ export class RecipeService {
   }
 
   deleteRecipe(index: number) {
-    this.recipes.splice(index);
+    this.recipes.splice(index, 1);
     this.recipesChanged.next(this.recipes.slice());
   }
 
