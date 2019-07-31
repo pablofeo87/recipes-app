@@ -1,7 +1,8 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
-import { catchError } from 'rxjs/operators';
-import { throwError } from 'rxjs';
+import { HttpClient, HttpErrorResponse } from '@angular/common/http';
+import { catchError, tap } from 'rxjs/operators';
+import { throwError, Subject, BehaviorSubject } from 'rxjs';
+import { User } from './user.model';
 
 export interface AuthResponseData {
   kind: string;
@@ -18,6 +19,8 @@ export interface AuthResponseData {
 })
 export class AuthService {
 
+  user = new BehaviorSubject<User>(null);
+
   constructor(private http: HttpClient) { }
 
   signup(email: string, password: string) {
@@ -28,18 +31,11 @@ export class AuthService {
         password: password,
         returnSecureToken: true
       }
-    ).pipe(catchError(errorRes =>{
-      let errorMsg = 'An unknown error occurred';
-      if (!errorRes.error || !errorRes.error.error) {
-        return throwError(errorMsg);
-      }
-      switch (errorRes.error.error.message) {
-        case 'EMAIL_EXISTS':
-          errorMsg = 'This email exists already';
-          break;
-      }
-      return throwError(errorMsg);
-    }));
+    ).pipe(
+      catchError(this.handleError),
+      tap(resData => {
+        this.handleAuthentication(resData);
+      }));
   }
 
   login(email: string, password: string) {
@@ -50,6 +46,37 @@ export class AuthService {
         password: password,
         returnSecureToken: true
       }
-    );
+    ).pipe(
+      catchError(this.handleError),
+      tap(resData => {
+        this.handleAuthentication(resData);
+      }));
+  }
+
+
+  private handleAuthentication(resData: AuthResponseData) {
+    const expirationDate = new Date(new Date().getTime() + +resData.expiresIn * 1000);
+        const user = new User(resData.email, resData.localId, resData.idToken, expirationDate);
+
+        this.user.next(user);
+  }
+
+  private handleError(errorRes: HttpErrorResponse) {
+    let errorMsg = 'An unknown error occurred';
+      if (!errorRes.error || !errorRes.error.error) {
+        return throwError(errorMsg);
+      }
+      switch (errorRes.error.error.message) {
+        case 'EMAIL_EXISTS':
+          errorMsg = 'This email exists already';
+          break;
+        case 'INVALID_PASSWORD':
+          errorMsg = 'This password is not correct';
+          break;
+        case 'EMAIL_NOT_FOUND':
+          errorMsg = 'This mail does not exist';
+          break;
+      }
+      return throwError(errorMsg);
   }
 }
