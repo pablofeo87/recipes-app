@@ -13,7 +13,7 @@ export class AuthComponent implements OnInit {
 
   constructor(private authService: AuthService, private router: Router) { }
 
-  @ViewChild('authForm') authForm: NgForm;
+  @ViewChild('authForm', { static: false }) authForm: NgForm;
 
   isLoginMode = true;
   isLoading = false;

@@ -12,7 +12,7 @@ import { THIS_EXPR } from '@angular/compiler/src/output/output_ast';
 })
 export class ShoppingEditComponent implements OnInit, OnDestroy {
 
-  @ViewChild('f') slForm: NgForm;
+  @ViewChild('f', { static: true }) slForm: NgForm;
 
   subscription: Subscription;
   editMode = false;
