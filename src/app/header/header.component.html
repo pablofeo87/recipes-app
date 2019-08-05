@@ -17,7 +17,7 @@
         <li class="nav-item">
           <a class="nav-link" style="cursor: pointer" *ngIf="isAuthenticated" (click)="onLogout()">Logout</a>
         </li>
-        <li class="dropdown" appDropdown>
+        <li class="dropdown" appDropdown *ngIf="isAuthenticated" >
           <a class="nav-link dropdown-toggle" role="button">Manage</a>
           <ul class="dropdown-menu">
             <li class="nav-item"><a class="nav-link" style="cursor: pointer" (click)="onSaveData()">Save data</a></li>
